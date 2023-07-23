@@ -3,12 +3,14 @@ import { PropertyService } from '../services';
 import { IsIncrementalId } from '../shared/validations';
 import { createOnePropertyDto } from './dto/CreateOnePropertyDto';
 import { updateOnePropertyByIdDto } from './dto/UpdateOnePropertyByIdDto';
+import { findAllPropertiesDto } from './dto/FindAllPropertiesDto';
 
 export class PropertyController {
   constructor(private readonly propertyService = new PropertyService()) {}
 
   async findAll(req: Request, res: Response) {
-    const list = await this.propertyService.findAll();
+    const dto = findAllPropertiesDto.parse(req.query);
+    const list = await this.propertyService.findAll(dto);
     res.json(list);
   }
 
