@@ -1,25 +1,34 @@
+import { Request, Response } from 'express';
 import { PropertyService } from '../services';
 
 export class PropertyController {
   constructor(private readonly propertyService = new PropertyService()) {}
 
-  async findAll() {
-    return this.propertyService.findAll();
+  async findAll(req: Request, res: Response) {
+    const list = await this.propertyService.findAll();
+    return res.json(list);
   }
 
-  async createOne(data: any) {
-    return this.propertyService.createOne(data);
+  async createOne(req: Request, res: Response) {
+    const item = await this.propertyService.createOne(req.body);
+    return res.json(item);
   }
 
-  async findOneByIdOrThrow(id: number) {
-    return this.propertyService.findOneByIdOrThrow(id);
+  async findOneByIdOrThrow(req: Request, res: Response) {
+    const id = Number(req.params.id);
+    const item = await this.propertyService.findOneByIdOrThrow(id);
+    return res.json(item);
   }
 
-  async updateOneById(id: number, data: any) {
-    return this.propertyService.updateOneById(id, data);
+  async updateOneById(req: Request, res: Response) {
+    const id = Number(req.params.id);
+    const item = await this.propertyService.updateOneById(id, req.body);
+    return res.json(item);
   }
 
-  async deleteOneById(id: number) {
-    return this.propertyService.deleteOneById(id);
+  async deleteOneById(req: Request, res: Response) {
+    const id = Number(req.params.id);
+    await this.propertyService.deleteOneById(id);
+    return res.end();
   }
 }
