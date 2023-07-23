@@ -1,4 +1,7 @@
+import { CreateOnePropertyDto } from '../../controllers/dto/CreateOnePropertyDto';
+import { UpdateOnePropertyByIdDto } from '../../controllers/dto/UpdateOnePropertyByIdDto';
 import AppDataSource, { seedDb } from '../../dataSource';
+import { PropertyType } from '../../entities';
 import { PropertyService } from '../PropertyService';
 
 describe('PropertyService', () => {
@@ -23,13 +26,12 @@ describe('PropertyService', () => {
 
   it('should be able to create a new property', async () => {
     // Arrange
-    const data = {
-      id: 127,
+    const data: CreateOnePropertyDto = {
       address: '963 Blackwell Street #10',
       price: 850200,
       bedrooms: 1,
       bathrooms: 1,
-      type: 'Townhouse',
+      type: PropertyType.TOWNHOUSE,
     };
     // Act
     const item = await propertyService.createOne(data);
@@ -56,7 +58,13 @@ describe('PropertyService', () => {
   it('should be able to update one property finding by id', async () => {
     // Arrange
     const id = 1;
-    const data = { bedrooms: 3 };
+    const data: UpdateOnePropertyByIdDto = {
+      address: '963 Blackwell Street #10',
+      price: 850200,
+      bedrooms: 10,
+      bathrooms: 1,
+      type: PropertyType.TOWNHOUSE,
+    };
     // Act
     const item = await propertyService.updateOneById(id, data);
     // Asert

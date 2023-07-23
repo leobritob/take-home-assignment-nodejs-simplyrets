@@ -20,3 +20,9 @@ export class Property {
   @Column({ type: 'text', nullable: true })
   type: string | null;
 }
+
+export enum PropertyType {
+  CONDOMINIUM = 'Condominium',
+  TOWNHOUSE = 'Townhouse',
+  SINGLE_FAMILY_RESIDENCE = 'SingleFamilyResidence',
+}

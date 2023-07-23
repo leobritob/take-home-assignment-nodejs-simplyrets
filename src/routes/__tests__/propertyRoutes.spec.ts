@@ -2,6 +2,9 @@ import request from 'supertest';
 import app from '../../app';
 import AppDataSource, { seedDb } from '../../dataSource';
 import seedJson from '../../data/seed.json';
+import { CreateOnePropertyDto } from '../../controllers/dto/CreateOnePropertyDto';
+import { PropertyType } from '../../entities';
+import { UpdateOnePropertyByIdDto } from '../../controllers/dto/UpdateOnePropertyByIdDto';
 
 describe('propertyRoutes', () => {
   beforeAll(async () => {
@@ -17,13 +20,13 @@ describe('propertyRoutes', () => {
   });
 
   describe('GET /properties/:id', () => {
-    it('should be able to get one property findind by id', async () => {
+    it('should be able to get one property finding by id', async () => {
       const id = 1;
       const response = await request(app).get(`/properties/${id}`);
       expect(response.body).toEqual(seedJson[0]);
     });
 
-    it('should be able to throw an error when try to get one property findind by id', async () => {
+    it('should be able to throw an error when try to get one property finding by id', async () => {
       const id = 1e9;
       request(app)
         .get(`/properties/${id}`)
@@ -36,23 +39,41 @@ describe('propertyRoutes', () => {
 
   describe('POST /properties', () => {
     it('should be able to create a new property', async () => {
-      const body = {
-        id: 127,
+      const body: CreateOnePropertyDto = {
         address: '963 Blackwell Street #10',
         price: 850200,
         bedrooms: 1,
         bathrooms: 1,
-        type: 'Townhouse',
+        type: PropertyType.TOWNHOUSE,
       };
       const response = await request(app).post('/properties').send(body);
-      expect(response.body).toEqual(body);
+      expect(response.status).toEqual(201);
+      expect(response.body.id).toEqual(expect.any(Number));
+    });
+
+    it('should be able to throw an error when try to create a new property with wrong fields', async () => {
+      const body: CreateOnePropertyDto = {
+        address: '963 Blackwell Street #10',
+        price: -1,
+        bedrooms: -1,
+        bathrooms: -1,
+        type: PropertyType.TOWNHOUSE,
+      };
+      const response = await request(app).post('/properties').send(body);
+      expect(response.status).toEqual(400);
     });
   });
 
   describe('PUT /properties/:id', () => {
     it('should be able to update one property finding by id', async () => {
       const id = 1;
-      const body = { bedrooms: 10 };
+      const body: UpdateOnePropertyByIdDto = {
+        address: '963 Blackwell Street #10',
+        price: 850200,
+        bedrooms: 10,
+        bathrooms: 1,
+        type: PropertyType.TOWNHOUSE,
+      };
       const response = await request(app).put(`/properties/${id}`).send(body);
       expect(response.body).toBeDefined();
       expect(response.body.bedrooms).toEqual(body.bedrooms);
@@ -60,7 +81,13 @@ describe('propertyRoutes', () => {
 
     it('should be able to throw an error when try to update property finding by id', (done) => {
       const id = 1e9;
-      const body = { bedrooms: 10 };
+      const body: UpdateOnePropertyByIdDto = {
+        address: '963 Blackwell Street #10',
+        price: 850200,
+        bedrooms: 10,
+        bathrooms: 1,
+        type: PropertyType.TOWNHOUSE,
+      };
       request(app)
         .put(`/properties/${id}`)
         .send(body)

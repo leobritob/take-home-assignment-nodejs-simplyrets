@@ -1,46 +1,39 @@
 import { Request, Response } from 'express';
 import { PropertyService } from '../services';
+import { IsIncrementalId } from '../shared/validations';
+import { createOnePropertyDto } from './dto/CreateOnePropertyDto';
+import { updateOnePropertyByIdDto } from './dto/UpdateOnePropertyByIdDto';
 
 export class PropertyController {
   constructor(private readonly propertyService = new PropertyService()) {}
 
   async findAll(req: Request, res: Response) {
     const list = await this.propertyService.findAll();
-    return res.json(list);
+    res.json(list);
   }
 
   async createOne(req: Request, res: Response) {
-    const item = await this.propertyService.createOne(req.body);
-    return res.status(201).json(item);
+    const dto = createOnePropertyDto.parse(req.body);
+    const item = await this.propertyService.createOne(dto);
+    res.status(201).json(item);
   }
 
   async findOneByIdOrThrow(req: Request, res: Response) {
-    try {
-      const id = Number(req.params.id);
-      const item = await this.propertyService.findOneByIdOrThrow(id);
-      return res.json(item);
-    } catch (error: any) {
-      return res.status(404).json({ message: error.message });
-    }
+    const id = IsIncrementalId(req.params.id);
+    const item = await this.propertyService.findOneByIdOrThrow(id);
+    res.json(item);
   }
 
   async updateOneById(req: Request, res: Response) {
-    try {
-      const id = Number(req.params.id);
-      const item = await this.propertyService.updateOneById(id, req.body);
-      return res.json(item);
-    } catch (error: any) {
-      return res.status(404).json({ message: error.message });
-    }
+    const id = IsIncrementalId(req.params.id);
+    const dto = updateOnePropertyByIdDto.parse(req.body);
+    const item = await this.propertyService.updateOneById(id, dto);
+    res.json(item);
   }
 
   async deleteOneById(req: Request, res: Response) {
-    try {
-      const id = Number(req.params.id);
-      await this.propertyService.deleteOneById(id);
-      return res.status(204).end();
-    } catch (error: any) {
-      return res.status(404).json({ message: error.message });
-    }
+    const id = IsIncrementalId(req.params.id);
+    await this.propertyService.deleteOneById(id);
+    res.status(204).end();
   }
 }
