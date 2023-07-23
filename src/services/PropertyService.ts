@@ -27,6 +27,7 @@ export class PropertyService {
   }
 
   async deleteOneById(id: number) {
+    await this.findOneByIdOrThrow(id);
     await this.propertyRepository.delete(id);
   }
 }

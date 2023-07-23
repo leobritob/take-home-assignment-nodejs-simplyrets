@@ -72,4 +72,11 @@ describe('PropertyService', () => {
     // Asert
     expect(propertyService.findOneByIdOrThrow(id)).rejects.toThrowError(new Error('Property not found'));
   });
+
+  it('should be able to throw an error when try to get one property finding by id', async () => {
+    // Arrange
+    const id = 1e9;
+    // Asert
+    expect(propertyService.deleteOneById(id)).rejects.toThrowError(new Error('Property not found'));
+  });
 });
