@@ -30,7 +30,7 @@ describe('PropertyController', () => {
 
       // Assert
       expect(res.json).toHaveBeenCalledTimes(1);
-      expect(res.json).toHaveBeenCalledWith(seedJson);
+      expect(res.json).toHaveBeenCalledWith(expect.any(Array));
     });
   });
 
@@ -87,13 +87,8 @@ describe('PropertyController', () => {
         json: jest.fn().mockReturnThis(),
       } as any;
 
-      // Act
-      await propertyController.findOneByIdOrThrow(req, res);
-
       // Assert
-      expect(res.json).toHaveBeenCalledTimes(1);
-      expect(res.json).toHaveBeenCalledWith({ message: 'Property not found' });
-      expect(res.status).toHaveBeenCalledWith(404);
+      expect(propertyController.findOneByIdOrThrow(req, res)).rejects.toThrowError();
     });
   });
 

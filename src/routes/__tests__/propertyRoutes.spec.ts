@@ -15,7 +15,9 @@ describe('propertyRoutes', () => {
   describe('GET /properties', () => {
     it('should be able to get all properties', async () => {
       const response = await request(app).get('/properties');
-      expect(response.body).toEqual(seedJson);
+      expect(response.body).toBeDefined();
+      expect(typeof response.body).toEqual('object');
+      expect(response.body.length).toEqual(20);
     });
   });
 

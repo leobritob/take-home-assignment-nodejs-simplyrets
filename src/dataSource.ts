@@ -2,7 +2,7 @@ import { DataSource } from 'typeorm';
 import { Property } from './entities';
 
 const AppDataSource = new DataSource({
-  logging: true,
+  logging: false,
   type: 'sqlite',
   database: ':memory:',
   entities: [Property],
