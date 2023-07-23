@@ -22,7 +22,7 @@
 | src/shared/exceptions  | All custom exceptions                                                |
 | src/shared/validations | All custom validations                                               |
 
-## Clock report
+## Time report
 
 ```
 10:30 am
@@ -110,7 +110,7 @@ $ yarn test:watch
 $ yarn test:coverage
 ```
 
-## Rodamp
+## Road map
 
 - Installing and setting up Swagger
 - Creating indexes to improve sql query performance
