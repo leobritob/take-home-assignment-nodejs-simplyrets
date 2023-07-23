@@ -24,7 +24,7 @@ describe('PropertyController', () => {
     // Act
     await propertyController.findAll(req, res);
 
-    // Asert
+    // Assert
     expect(res.json).toHaveBeenCalledTimes(1);
     expect(res.json).toHaveBeenCalledWith(seedJson);
   });
@@ -41,14 +41,16 @@ describe('PropertyController', () => {
     };
     const req = { body } as any;
     const res = {
+      status: jest.fn().mockReturnThis(),
       json: jest.fn().mockReturnThis(),
     } as any;
 
     // Act
     await propertyController.createOne(req, res);
 
-    // Asert
+    // Assert
     expect(res.json).toHaveBeenCalledTimes(1);
+    expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith(body);
   });
 
@@ -57,13 +59,14 @@ describe('PropertyController', () => {
     const id = 1;
     const req = { params: { id } } as any;
     const res = {
+      status: jest.fn().mockReturnThis(),
       json: jest.fn().mockReturnThis(),
     } as any;
 
     // Act
     await propertyController.findOneByIdOrThrow(req, res);
 
-    // Asert
+    // Assert
     expect(res.json).toHaveBeenCalledTimes(1);
     expect(res.json).toHaveBeenCalledWith(seedJson[0]);
   });
@@ -73,12 +76,17 @@ describe('PropertyController', () => {
     const id = 1e9;
     const req = { params: { id } } as any;
     const res = {
+      status: jest.fn().mockReturnThis(),
       json: jest.fn().mockReturnThis(),
     } as any;
 
-    // Asert
-    expect(propertyController.findOneByIdOrThrow(req, res)).rejects.toThrowError(new Error('Property not found'));
-    expect(res.json).toHaveBeenCalledTimes(0);
+    // Act
+    await propertyController.findOneByIdOrThrow(req, res);
+
+    // Assert
+    expect(res.json).toHaveBeenCalledTimes(1);
+    expect(res.json).toHaveBeenCalledWith({ message: 'Property not found' });
+    expect(res.status).toHaveBeenCalledWith(404);
   });
 
   it('should be able to update one property finding by id', async () => {
@@ -93,7 +101,7 @@ describe('PropertyController', () => {
     // Act
     await propertyController.updateOneById(req, res);
 
-    // Asert
+    // Assert
     expect(res.json).toHaveBeenCalledTimes(1);
     expect(res.json).toHaveBeenCalledWith({ ...seedJson[0], bedrooms: body.bedrooms });
   });
@@ -103,14 +111,15 @@ describe('PropertyController', () => {
     const id = 1;
     const req = { params: { id } } as any;
     const res = {
+      status: jest.fn().mockReturnThis(),
       end: jest.fn().mockReturnThis(),
     } as any;
 
     // Act
     await propertyController.deleteOneById(req, res);
 
-    // Asert
-    expect(propertyController.findOneByIdOrThrow(req, res)).rejects.toThrowError(new Error('Property not found'));
+    // Assert
     expect(res.end).toHaveBeenCalledTimes(1);
+    expect(res.status).toHaveBeenCalledWith(204);
   });
 });

@@ -11,24 +11,36 @@ export class PropertyController {
 
   async createOne(req: Request, res: Response) {
     const item = await this.propertyService.createOne(req.body);
-    return res.json(item);
+    return res.status(201).json(item);
   }
 
   async findOneByIdOrThrow(req: Request, res: Response) {
-    const id = Number(req.params.id);
-    const item = await this.propertyService.findOneByIdOrThrow(id);
-    return res.json(item);
+    try {
+      const id = Number(req.params.id);
+      const item = await this.propertyService.findOneByIdOrThrow(id);
+      return res.json(item);
+    } catch (error: any) {
+      return res.status(404).json({ message: error.message });
+    }
   }
 
   async updateOneById(req: Request, res: Response) {
-    const id = Number(req.params.id);
-    const item = await this.propertyService.updateOneById(id, req.body);
-    return res.json(item);
+    try {
+      const id = Number(req.params.id);
+      const item = await this.propertyService.updateOneById(id, req.body);
+      return res.json(item);
+    } catch (error: any) {
+      return res.status(404).json({ message: error.message });
+    }
   }
 
   async deleteOneById(req: Request, res: Response) {
-    const id = Number(req.params.id);
-    await this.propertyService.deleteOneById(id);
-    return res.end();
+    try {
+      const id = Number(req.params.id);
+      await this.propertyService.deleteOneById(id);
+      return res.status(204).end();
+    } catch (error: any) {
+      return res.status(404).json({ message: error.message });
+    }
   }
 }

@@ -1,26 +1,19 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import { PropertyController } from '../controllers';
+
+const propertyController = new PropertyController();
 
 export const propertyRoutes = express.Router();
 
 propertyRoutes.use(bodyParser.json());
 
-propertyRoutes.get('/', async (req, res) => {
-  res.send('GET all properties');
-});
+propertyRoutes.get('/', propertyController.findAll.bind(propertyController));
 
-propertyRoutes.get('/:id', async (req, res) => {
-  res.send('GET property by id');
-});
+propertyRoutes.get('/:id', propertyController.findOneByIdOrThrow.bind(propertyController));
 
-propertyRoutes.post('/', async (req, res) => {
-  res.send('Create property');
-});
+propertyRoutes.post('/', propertyController.createOne.bind(propertyController));
 
-propertyRoutes.put('/:id', async (req, res) => {
-  res.send('Update property');
-});
+propertyRoutes.put('/:id', propertyController.updateOneById.bind(propertyController));
 
-propertyRoutes.delete('/:id', async (req, res) => {
-  res.send('Delete property');
-});
+propertyRoutes.delete('/:id', propertyController.deleteOneById.bind(propertyController));
